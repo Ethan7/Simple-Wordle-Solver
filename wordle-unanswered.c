@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
+#include"mergesort-struct.h"
 
 #define WORDCOUNT 12972
 #define WORDLEN 5
@@ -70,16 +71,17 @@ int predict(char (*words)[WORDLEN+2], char *known, char (*nearby)[WORDLEN+1], ch
 		}
 	}
 	//Find the probabilities of words based on their letters
-	int wordprob[k];
+	struct pair wordprob[k];
 	char letterused[26];
 	for(int i = 0; i < 26; i++){
 		letterused[i] = 0;
 	}
 	for(int i = 0; i < k; i++){
-		wordprob[i] = 0;
+		wordprob[i].key = 0;
+		wordprob[i].value = newlist[i];
 		for(int j = 0; j < WORDLEN; j++){
 			if(!letterused[words[newlist[i]][j]-'a']){
-				wordprob[i] += letterprob[words[newlist[i]][j]-'a'];
+				wordprob[i].key += letterprob[words[newlist[i]][j]-'a'];
 				letterused[words[newlist[i]][j]-'a'] = 1;
 			}
 		}
@@ -88,26 +90,16 @@ int predict(char (*words)[WORDLEN+2], char *known, char (*nearby)[WORDLEN+1], ch
 		}
 	}
 	//Sort the list
-	for(int i = 0; i < k; i++){
-		for(int j = 0; j < k; j++){
-			if(wordprob[i] > wordprob[j]){
-				int temp = newlist[i];
-				newlist[i] = newlist[j];
-				newlist[j] = temp;
-				temp = wordprob[i];
-				wordprob[i] = wordprob[j];
-				wordprob[j] = temp;
-			}
-		}
-	}
+	mergesort(k, wordprob);
+
 	//Find the remaining words with the least entropy
 	for(int i = 0; i < 10; i++){
 		if(i == k){
 			break;
 		}
-		printf("Remaining word: %s, Score: %d\n", words[newlist[i]], wordprob[i]);
+		printf("Remaining word: %s, Score: %d\n", words[wordprob[i].value], wordprob[i].key);
 	}
-	return newlist[0];
+	return wordprob[0].value;
 }
 
 int main(int argc, char **argv){
