@@ -150,10 +150,12 @@ int main(int argc, char **argv){
 		len = getline(&input, &len, stdin);
 		input[len-1] = 0;
 		strcpy(nearby[i], input);
-		printf("Unused letters: ");
+		printf("New Unused letters: ");
 		len = getline(&input, &len, stdin);
 		input[len-1] = 0;
-		strcpy(unused, input);
+		for(int i = 0; i < len; i++){
+			unused[input[i]-'a'] = input[i];
+		}
 	}
 	return 0;
 }
