@@ -152,9 +152,11 @@ int main(int argc, char **argv){
 		strcpy(nearby[i], input);
 		printf("New Unused letters: ");
 		len = getline(&input, &len, stdin);
-		input[len-1] = 0;
-		for(int i = 0; i < len; i++){
-			unused[input[i]-'a'] = input[i];
+		if(len > 1){
+			input[len-1] = 0;
+			for(int i = 0; i < len-1; i++){
+				unused[input[i]-'a'] = input[i];
+			}
 		}
 	}
 	return 0;
